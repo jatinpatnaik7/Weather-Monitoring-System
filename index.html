@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CityScope Weather | Advanced Live Weather & AQI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Loader -->
+  <div id="loader" class="loader-overlay">
+    <div class="loader-card">
+      <div class="loader-ring"></div>
+      <h2>CityScope Weather</h2>
+      <p>Loading weather intelligence...</p>
+    </div>
+  </div>
+
+  <!-- Background FX -->
+  <div class="bg-fx">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid"></div>
+    <div id="rainFx" class="rain-fx hidden"></div>
+    <div id="sunFx" class="sun-fx hidden"></div>
+    <div id="stormFx" class="storm-fx hidden"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="brand">⚡ CityScope</div>
+
+    <nav id="navMenu" class="nav">
+      <a href="#search-section">Search</a>
+      <a href="#overview">Overview</a>
+      <a href="#aqi">AQI</a>
+      <a href="#hourly">Hourly</a>
+      <a href="#forecast">Forecast</a>
+    </nav>
+
+    <div class="header-actions">
+      <button id="myLocationBtn" class="btn ghost">📍 My Location</button>
+      <button id="refreshBtn" class="btn ghost">🔄 Refresh</button>
+      <button id="themeBtn" class="icon-btn">🌙</button>
+      <button id="menuBtn" class="icon-btn mobile-only">☰</button>
+    </div>
+  </header>
+
+  <!-- Search First Hero -->
+  <section id="search-section" class="hero container reveal">
+    <div class="hero-left">
+      <p class="eyebrow">ADVANCED LIVE WEATHER • AQI • SEARCH ANY PLACE • NO API KEY</p>
+      <h1>Search any city, town, or village and get full live details.</h1>
+      <p class="hero-text">
+        Real-time weather, AQI, hourly forecast, weekly forecast, sunrise, sunset,
+        humidity, wind, UV, visibility, pressure, and more.
+      </p>
+
+      <div class="search-wrap">
+        <div class="search-bar">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search city, town, village, district..."
+            autocomplete="off"
+          />
+          <button id="searchBtn">Search</button>
+        </div>
+        <div id="suggestions" class="suggestions hidden"></div>
+      </div>
+
+      <div class="recent-box glass">
+        <div class="recent-header">
+          <span>Recent Searches</span>
+          <button id="clearRecentBtn">Clear</button>
+        </div>
+        <div id="recentSearches" class="recent-list">
+          <span class="empty-chip">No recent searches yet</span>
+        </div>
+      </div>
+
+      <div class="status-pill">
+        <span class="live-dot"></span>
+        <span>Live data active</span>
+        <span class="sep">•</span>
+        <span>Updated: <strong id="updatedAt">--</strong></span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="glass hero-card">
+        <div class="hero-card-top">
+          <div>
+            <p id="placeName" class="place-name">Search a place</p>
+            <div class="temp-row">
+              <h2 id="heroTemp">--°C</h2>
+              <span id="moodBadge" class="mood-badge">READY</span>
+            </div>
+            <p id="heroCondition" class="condition-text">Enter a location to begin</p>
+          </div>
+          <div id="heroIcon" class="hero-icon">🌍</div>
+        </div>
+
+        <div class="hero-meta">
+          <div class="mini-card">
+            <span>Feels Like</span>
+            <strong id="feelsLike">--°C</strong>
+          </div>
+          <div class="mini-card">
+            <span>Humidity</span>
+            <strong id="humidity">--%</strong>
+          </div>
+          <div class="mini-card">
+            <span>Wind</span>
+            <strong id="windSpeed">-- km/h</strong>
+          </div>
+          <div class="mini-card">
+            <span>Rain Chance</span>
+            <strong id="rainChance">--%</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Place Info -->
+  <section id="overview" class="container reveal">
+    <div class="section-head">
+      <p class="chip">PLACE DETAILS</p>
+      <h2>Matched Location Details</h2>
+      <p id="placeSubtitle">Search to view exact place information</p>
+    </div>
+
+    <div class="place-grid">
+      <div class="glass info-card"><h4>Place</h4><p id="infoPlace">--</p></div>
+      <div class="glass info-card"><h4>State / Region</h4><p id="infoRegion">--</p></div>
+      <div class="glass info-card"><h4>Country</h4><p id="infoCountry">--</p></div>
+      <div class="glass info-card"><h4>Latitude / Longitude</h4><p id="infoCoords">--</p></div>
+      <div class="glass info-card"><h4>Timezone</h4><p id="infoTimezone">--</p></div>
+      <div class="glass info-card"><h4>Elevation</h4><p id="infoElevation">--</p></div>
+    </div>
+  </section>
+
+  <!-- Weather Details -->
+  <section class="container reveal">
+    <div class="section-head">
+      <p class="chip">LIVE WEATHER</p>
+      <h2>Full Weather Details</h2>
+      <p>Detailed real-time weather for the selected place</p>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="glass metric-card"><h4>Temperature</h4><p id="metricTemp">--°C</p></div>
+      <div class="glass metric-card"><h4>Feels Like</h4><p id="metricFeels">--°C</p></div>
+      <div class="glass metric-card"><h4>Humidity</h4><p id="metricHumidity">--%</p></div>
+      <div class="glass metric-card"><h4>Wind Speed</h4><p id="metricWind">-- km/h</p></div>
+      <div class="glass metric-card"><h4>Wind Direction</h4><p id="metricWindDir">--</p></div>
+      <div class="glass metric-card"><h4>Wind Gusts</h4><p id="metricGusts">-- km/h</p></div>
+      <div class="glass metric-card"><h4>Pressure</h4><p id="metricPressure">-- hPa</p></div>
+      <div class="glass metric-card"><h4>Visibility</h4><p id="metricVisibility">-- km</p></div>
+      <div class="glass metric-card"><h4>Cloud Cover</h4><p id="metricCloud">--%</p></div>
+      <div class="glass metric-card"><h4>UV Index</h4><p id="metricUV">--</p></div>
+      <div class="glass metric-card"><h4>Precipitation</h4><p id="metricPrecip">-- mm</p></div>
+      <div class="glass metric-card"><h4>Rain Probability</h4><p id="metricRainProb">--%</p></div>
+    </div>
+  </section>
+
+  <!-- Sun -->
+  <section class="container reveal">
+    <div class="section-head">
+      <p class="chip">SUN & TIME</p>
+      <h2>Daylight Information</h2>
+      <p>Sunrise, sunset, and local timezone</p>
+    </div>
+
+    <div class="sun-grid">
+      <div class="glass sun-card"><h4>🌅 Sunrise</h4><p id="sunrise">--</p></div>
+      <div class="glass sun-card"><h4>🌇 Sunset</h4><p id="sunset">--</p></div>
+      <div class="glass sun-card"><h4>🕒 Local Timezone</h4><p id="timezoneText">--</p></div>
+    </div>
+  </section>
+
+  <!-- AQI -->
+  <section id="aqi" class="container reveal">
+    <div class="section-head">
+      <p class="chip">AIR QUALITY</p>
+      <h2>Live AQI & Pollutants</h2>
+      <p>Air quality metrics for the selected location</p>
+    </div>
+
+    <div class="aqi-layout">
+      <div class="glass aqi-main">
+        <div class="aqi-top">
+          <div>
+            <p class="aqi-label">US AQI</p>
+            <h3 id="aqiValue">--</h3>
+            <p id="aqiStatus" class="aqi-status">Waiting for location...</p>
+          </div>
+          <div id="aqiEmoji" class="aqi-emoji">🌿</div>
+        </div>
+        <div class="aqi-bar">
+          <div id="aqiFill" class="aqi-fill"></div>
+        </div>
+        <p id="aqiNote" class="aqi-note">Search a location to load air quality data.</p>
+      </div>
+
+      <div class="aqi-grid">
+        <div class="glass info-card"><h4>PM2.5</h4><p id="pm25">-- μg/m³</p></div>
+        <div class="glass info-card"><h4>PM10</h4><p id="pm10">-- μg/m³</p></div>
+        <div class="glass info-card"><h4>Ozone (O₃)</h4><p id="o3">-- μg/m³</p></div>
+        <div class="glass info-card"><h4>Nitrogen Dioxide (NO₂)</h4><p id="no2">-- μg/m³</p></div>
+        <div class="glass info-card"><h4>Carbon Monoxide (CO)</h4><p id="co">-- μg/m³</p></div>
+        <div class="glass info-card"><h4>Air Quality Advice</h4><p id="aqiAdvice">--</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hourly -->
+  <section id="hourly" class="container reveal">
+    <div class="section-head">
+      <p class="chip">NEXT 24 HOURS</p>
+      <h2>Hourly Forecast</h2>
+      <p>Temperature, condition, and rain probability</p>
+    </div>
+    <div id="hourlyGrid" class="hourly-grid"></div>
+  </section>
+
+  <!-- Forecast -->
+  <section id="forecast" class="container reveal">
+    <div class="section-head">
+      <p class="chip">7-DAY FORECAST</p>
+      <h2>Weekly Outlook</h2>
+      <p>Daily weather summary for the next 7 days</p>
+    </div>
+    <div id="forecastGrid" class="forecast-grid"></div>
+  </section>
+
+  <!-- Smart Insights -->
+  <section class="container reveal">
+    <div class="section-head">
+      <p class="chip">SMART INSIGHTS</p>
+      <h2>Live Weather Summary</h2>
+      <p>Human-friendly summary based on current live conditions</p>
+    </div>
+
+    <div class="insights-grid">
+      <div class="glass insight-card"><h4>Current Summary</h4><p id="summary1">Search a place to begin.</p></div>
+      <div class="glass insight-card"><h4>Comfort Insight</h4><p id="summary2">Waiting for data.</p></div>
+      <div class="glass insight-card"><h4>Rain & AQI Insight</h4><p id="summary3">Waiting for data.</p></div>
+    </div>
+  </section>
+
+  <!-- Error -->
+  <div id="errorBox" class="error-box hidden">Could not load data. Please try another place.</div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <h3>CityScope Weather</h3>
+    <p>Advanced live weather + AQI web app built with HTML, CSS, JavaScript & Open-Meteo APIs.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
